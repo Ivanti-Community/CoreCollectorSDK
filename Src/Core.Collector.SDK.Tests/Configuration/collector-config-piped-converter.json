@@ -1,0 +1,126 @@
+﻿{
+  "Version": "2.0",
+  "Id": "1",
+  "Type": "Collector.SDK.Tests.Mocks.MockCollector,Core.Collector.SDK.Tests",
+  "StackType": "Collector.SDK.Tests.Mocks.MockStack,Core.Collector.SDK.Tests",
+  "ThirdPartyTypes": [
+    {
+      "AssemblyName": "Core.Collector.SDK",
+      "Type": "LoggerFacade",
+      "RegisterAll": false,
+      "Owned": false,
+      "Singleton": false
+    },
+    {
+      "AssemblyName": "Core.Collector.SDK.Tests",
+      "Type": "MockFileReader"
+    },
+    {
+      "AssemblyName": "Core.Collector.SDK.Tests",
+      "Type": "MockSQLReader"
+    },
+    {
+      "AssemblyName": "Core.Collector.SDK.Tests",
+      "Type": "MockDirectory"
+    }
+  ],
+  "ThirdPartyModules": [
+    {
+      "AssemblyName": "AutoFac.Extras.NLog.DotNetCore",
+      "RegisterAll": true
+    }
+  ],
+  "Properties": {
+    "FolderPath": "c:\\temp",
+    "FileFilter": "*.log"
+  },
+  "EndPoints": [
+    {
+      "Id": 20,
+      "Name": "PublishedLogFile",
+      "User": "",
+      "Password": "",
+      "Properties": {
+        "FolderPath": "c:\\temp",
+        "FileName": "c:\\temp\\discovery.log"
+      }
+    },
+    {
+      "Id": 21,
+      "Name": "XtractionLogs",
+      "User": "",
+      "Password": "",
+      "Properties": {
+      }
+    }
+  ],
+  "Readers": [
+    {
+      "Id": "31",
+      "Type": "Collector.SDK.Tests.Mocks.MockDateTimeReader,Core.Collector.SDK.Tests",
+      "DataType": "LogEntry",
+      "EndPointId": "21"
+    }
+  ],
+  "Transformers": [
+    {
+      "Id": "40",
+      "Type": "Collector.SDK.Tests.Mocks.MockTransformer,Core.Collector.SDK.Tests",
+      "ReaderId": "31",
+      "Mappers": [
+        {
+          "Id": "50",
+          "TransformerId": "40",
+          "Type": "Collector.SDK.Mappers.DefaultMapper,Core.Collector.SDK",
+          "PipedConverters": [
+            {
+              "Id": "1",
+              "Type": "Collector.SDK.Converters.CombineDateTimeConverter,Core.Collector.SDK",
+              "Properties": {
+              }
+            },
+            {
+              "Id": "2",
+              "Type": "Collector.SDK.Converters.DateTimeUtcConverter,Core.Collector.SDK",
+              "Properties": {
+              }
+            }
+          ],
+          "SourceTargetMappings": [
+            {
+              "PipeData": "true",
+              "PrimaryKey":  "Date",
+              "TargetConverters": [
+                {
+                  "Id": "1",
+                  "CombineInputOutput": "false",
+                  "LeftSideMap": {
+                    "Date": [ "DateTime" ]
+                  }
+                },
+                {
+                  "Id": "2",
+                  "CombineInputOutput": "true",
+                  "LeftSideMap": {
+                    "DateTime": [ "DateTimeUTC" ],
+                    "Date": [ "DateTimeUTC" ]
+                  }
+                }
+              ],
+              "Properties": {
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Publishers": [
+    {
+      "Id": "60",
+      "Type": "Collector.SDK.Tests.Mocks.MockPublisher,Core.Collector.SDK.Tests",
+      "TransformerId": "40",
+      "EndPointId": "20"
+    }
+  ]
+}
