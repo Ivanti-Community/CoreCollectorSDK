@@ -225,9 +225,6 @@ The nesting of converters allows you to nest the output.  This is an implicit pi
 
 See these tests to get a better idea of how these new mappers can be used.
 
-# About the Samples
-Check out the Collector.SDK.Samples.Console for Active Directory and Kafka collectors.
-
 # About the Tests
 
 Test: PipedConverters_PipedArray_Success
