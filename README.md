@@ -136,16 +136,27 @@ PublishData(string senderId, List<object> data, Dictionary<string, string> conte
 The following changes have been made to support piped converters.
 
 Collector Version - There is now a version within the Collector configuration as a double.  Default is 1.0 (backward support).  Version 2.0 + indicates piped converter support.
+
 Mappers.PipedConverters - These are all the configured converters, this overrides Mapped.Converters.
+
 Id - The id of the converter. (required)
+
 Type - Class type of the converter. (required)
+
 Mappers.SourceTargetMappings - Defined the mappings between the inbound data and the piped converters.
+
 PrimaryKey - The data point key.
+
 Properties - A dictionary of name/value pairs.
+
 TargetConverters - A list of converters to invoke (in order) for this data point.
+
 Id - Id of the converter.
+
 CombineInputOutput- Set to true if both the input to a converter and the output should be combined
+
 Nested - Set to true if the output should be run through all the mappings again.  This allows you to nest conversions of a hierarchy. 
+
 LeftSideMap - Rules when converting the primary key to another key.
  
 
