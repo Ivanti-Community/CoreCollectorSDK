@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Ivanti.Core.Collector.SDK</id>
+    <version>3.0.0</version>
+    <title>Core Collector SDK</title>
+    <authors>Roy Morris</authors>
+    <owners>Team Phantom</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SDK for building Ivanti Connectors.</description>
+    <copyright>Copyright 2019 Ivanti Corp.</copyright>
+    <tags>Connector Collector SDK Ivanti</tags>
+    <dependencies>
+        <dependency id="Autofac.Extensions.DependencyInjection" version="5.0.1" />
+        <dependency id="AutoFac.Extras.NLog.DotNetCore" version="1.0.1" />
+        <dependency id="Newtonsoft.Json" version="11.0.1" />
+        <dependency id="NLog.Web.AspNetCore" version="4.9.0" />
+    </dependencies>  
+  </metadata>
+<files>
+    <file src="bin\Debug\netcoreapp2.2\*.dll" target="lib\netcoreapp2.2" />
+</files>
+</package>

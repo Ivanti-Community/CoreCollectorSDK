@@ -267,3 +267,5 @@ __pycache__/
 /csvFiles/Processed/
 /csvFiles/Published/
 /csvFiles/Processing/
+Build/nuget.exe
+Src/Core.Collector.SDK/lib/netcoreapp2.2/Core.Collector.SDK.dll

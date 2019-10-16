@@ -12,7 +12,7 @@
 
 param
 (
-[Bool] $restore = $TRUE,   
+[Bool] $restore = $FALSE,   
 [String] $config = "Debug",
 [Boolean] $packageLocally = $FALSE,
 [String] $version = "3.0.0"
@@ -27,9 +27,13 @@ Write-Host "Parent dir $parentDir"
 
 Import-Module -Name "$workingDir\SdkFunctions.psm1"
 Write-Host "Resolving MsBuild..."
-$msbuild = Resolve-MsBuild
+$msb2019 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\*\MSBuild\Current\bin\msbuild.exe" -ErrorAction SilentlyContinue
+if ($msb2019) {
+    Write-Host "Found MSBuild 2019 (or later)."
+    Write-Host $msb2019
+}
 
-$nugetExe = "$parentDir\nuget.exe"
+$nugetExe = "$workingDir\nuget.exe"
 $nugetLocalRepo = "D:\Dev\Package-Repo"
 
 $workingDir = "$parentDir\Src"
@@ -49,8 +53,8 @@ $solutionFile = "$parentDir\Src\CoreCollectorSDK.sln"
 Write-Host "Solution file: " $solutionFile
 
 Write-Host "Building Collector SDK"
-Write-Host $msbuild $solutionFile /t:Rebuild /fl /clp:"v=m;Summary" /p:Configuration=$config /p:Platform="Any CPU"
-& $msbuild $solutionFile /t:Rebuild /fl /clp:"v=m;Summary" /p:Configuration=$config /p:Platform="Any CPU"
+Write-Host $msb2019 $solutionFile /t:Rebuild /fl /clp:"v=m;Summary" /p:Configuration=$config /p:Platform="Any CPU"
+& $msb2019 $solutionFile /t:Rebuild /fl /clp:"v=m;Summary" /p:Configuration=$config /p:Platform="Any CPU"
 
 if ($packageLocally) 
 {
