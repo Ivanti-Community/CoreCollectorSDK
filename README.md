@@ -1,5 +1,5 @@
 # .Net Core Collector SDK
-A .Net Core SDK for Ivanti Connectors that allows the loading, transforming and publishing of data.  It is a configuration driven ETL tool for building Ivanti Connectors.
+A .Net Core SDK for Ivanti Connectors that allows the loading, transforming and publishing of data into Ivanti Cloud.
 
 # Introduction
 The purpose of this document describes the design and implementation of the .Net Core Collector SDK.
