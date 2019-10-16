@@ -188,25 +188,18 @@ In the example below the Mapper is configured for two Converters: CombineDataTim
             "TargetConverters": [
                {
                   "Id": "1",
-                  "CombineInputOutput": "false",
-
+                  "CombineInputOutput": "false".
                   "NestOutput": "true",
-
                   "LeftSideMap": { "Date": [ "DateTime" ] }
                },
                {
                   "Id": "2",
-
-                  "CombineInputOutput": "true",
-
+                  "CombineInputOutput": "true".
                   "NestOutput": "false",
-
-                  "LeftSideMap": { "DateTime": [ "DateTimeUTC" ]
+                  "LeftSideMap": { "DateTime": [ "DateTimeUTC" ] }
                },
-               Properties:{}
-
+               "Properties": {}
             ]
-
          }
       ]
    }
