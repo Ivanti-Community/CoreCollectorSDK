@@ -5,6 +5,7 @@ using Collector.SDK.Collectors;
 using Collector.SDK.DataModel;
 using Collector.SDK.Logging;
 using Collector.SDK.Readers;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -17,9 +18,9 @@ namespace Collector.SDK.Samples.Readers
         private ICollector _collector;
         private IFileReader _fileReader;
 
-        public LogFileReader(IFileReader fileReader, ILogger logger, ICollector collector) : base(collector)
+        public LogFileReader(ILogger logger, ICollector collector) : base(collector)
         {
-            _fileReader = fileReader;
+            _fileReader = new FileReader();
             _logger = logger;
             _collector = collector;
         }
@@ -31,26 +32,52 @@ namespace Collector.SDK.Samples.Readers
 
         public override async Task Read(Dictionary<string, string> properties)
         {
-            var fileName = properties[CollectorConstants.KEY_FILENAME];
-
-            _logger.Info("Reading log file : " + fileName);
-            // context gets bubbled up to the transformer and possibly the publisher
-            var context = new Dictionary<string, string>();
-            context.Add(CollectorConstants.KEY_FILENAME, fileName);
-
-            if (!string.IsNullOrEmpty(fileName))
+            try
             {
+                if (!EndPointConfig.Properties.ContainsKey(CollectorConstants.KEY_FOLDER))
+                {
+                    _logger.Error("Property 'FolderName' is missing from the end point config properties");
+                    var stateEvent = new StateEvent()
+                    {
+                        SenderId = Id,
+                        State = CollectorConstants.STATE_READER_ERROR,
+                        ExtraInfo = "FolderName property is missing."
+                    };
+                    await _collector.SignalEvent(stateEvent);
+                    return;
+                }
+                if (!EndPointConfig.Properties.ContainsKey(CollectorConstants.KEY_FILENAME))
+                {
+                    _logger.Error("Property 'FileName' is missing from the end point config properties");
+                    var stateEvent = new StateEvent()
+                    {
+                        SenderId = Id,
+                        State = CollectorConstants.STATE_READER_ERROR,
+                        ExtraInfo = "FileName property is missing."
+                    };
+                    await _collector.SignalEvent(stateEvent);
+                    return;
+                }
+                var path = EndPointConfig.Properties[CollectorConstants.KEY_FOLDER];
+                var fileName = EndPointConfig.Properties[CollectorConstants.KEY_FILENAME];
+                var fullPath = string.Format(@"{0}\{1}", path, fileName);
+
+                _logger.Info("Reading log file : " + fullPath);
+                // context gets bubbled up to the transformer and possibly the publisher
+                var context = new Dictionary<string, string>();
+                context.Add(fullPath, fileName);
+
                 _logger.Info("Processing file {0}", fileName);
-                if (_fileReader.Open(fileName))
+                if (_fileReader.Open(fullPath))
                 {
                     string s = "";
                     while ((s = _fileReader.ReadLine()) != null)
                     {
                         // Each row is a line of text from the log
                         var row = new EntityCollection();
-                            
+
                         // Split the log entry by spaces
-                        var entries = s.Split(' ');
+                        var entries = s.Split(' ', '|');
                         if (entries.Length > 6)
                         {
                             // TODO: How to handle exceptions in the log?
@@ -58,7 +85,7 @@ namespace Collector.SDK.Samples.Readers
                                 continue;
                             // From entry 6 on is the message, lets recreate it...
                             var message = "";
-                            for (int i = 6; i < entries.Length; i++)
+                            for (int i = 4; i < entries.Length; i++)
                             {
                                 message = string.Format(CultureInfo.InvariantCulture, "{0} {1}", message, entries[i]);
                             }
@@ -75,6 +102,10 @@ namespace Collector.SDK.Samples.Readers
                         }
                     }
                 }
+            } 
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
             }
         }
     }

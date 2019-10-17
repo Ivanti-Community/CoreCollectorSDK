@@ -9,6 +9,8 @@ using Collector.SDK.Collectors;
 using Collector.SDK.Logging;
 using System.Threading.Tasks;
 using Collector.SDK.DataModel;
+using System;
+using Collector.SDK.Samples.DataModel;
 
 namespace Collector.SDK.Samples.Publishers
 {
@@ -43,15 +45,16 @@ namespace Collector.SDK.Samples.Publishers
                 {
                     CreateDirectory(path);
                 }
-                foreach (var point in data)
+                var fullPath = string.Format("{0}\\publisher-log-{1}{2}{3}{4}{5}.txt",
+                                    path, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, DateTime.Now.Hour, DateTime.Now.Minute);
+                foreach (var dataPoint in data)
                 {
-                    var entity = point as IEntity;
-                    var payload = JsonConvert.SerializeObject(entity);
-                    var logEntry = string.Format("Entity : {0}", payload);
-                    var fullPath = string.Format("{0}\\publisher-log.txt", path);
+                    var logEntry = dataPoint as LogEntry;
+                    var payload = JsonConvert.SerializeObject(logEntry);
+                    var line = string.Format("{0}\r\n", payload);
                     using (StreamWriter file = new StreamWriter(fullPath, File.Exists(fullPath)))
                     {
-                        file.WriteLine(logEntry);
+                        file.WriteLine(payload);
                     }
                 }
             });

@@ -19,8 +19,6 @@
     }
   ],
   "Properties": {
-    "FolderPath": "c:\\temp",
-    "FileFilter": "*.log"
   },
   "EndPoints": [
     {
@@ -29,8 +27,7 @@
       "User": "",
       "Password": "",
       "Properties": {
-        "FolderPath": "c:\\temp",
-        "FileName": "c:\\temp\\discovery.log"
+        "FolderPath": "C:/Temp/Logs"
       }
     },
     {
@@ -39,6 +36,9 @@
       "User": "",
       "Password": "",
       "Properties": {
+        "FolderPath": "C:/ProgramData/Ivanti/LEA/Logs",
+        "FileName": "LEA.Sample.Client.log",
+        "FileFilter": "*.log"
       }
     }
   ],
@@ -46,7 +46,6 @@
     {
       "Id": "31",
       "Type": "Collector.SDK.Samples.Readers.LogFileReader,Core.Collector.SDK.Samples",
-      "DataType": "LogEntry",
       "EndPointId": "21"
     }
   ],
@@ -60,6 +59,7 @@
           "Id": "50",
           "TransformerId": "40",
           "Type": "Collector.SDK.Mappers.DefaultMapper,Core.Collector.SDK",
+          "DataType": "Collector.SDK.Samples.DataModel.LogEntry,Core.Collector.SDK.Samples",
           "PipedConverters": [
             {
               "Id": "1",
@@ -72,12 +72,18 @@
               "Type": "Collector.SDK.Converters.DateTimeUtcConverter,Core.Collector.SDK",
               "Properties": {
               }
+            },
+            {
+              "Id": "3",
+              "Type": "Collector.SDK.Converters.NoOpConverter,Core.Collector.SDK",
+              "Properties": {
+              }
             }
           ],
           "SourceTargetMappings": [
             {
               "PipeData": "true",
-              "PrimaryKey":  "Date",
+              "PrimaryKey": "Date",
               "TargetConverters": [
                 {
                   "Id": "1",
