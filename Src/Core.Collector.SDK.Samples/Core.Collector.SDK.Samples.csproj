@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Collectors\" />
-    <Folder Include="Converters\" />
     <Folder Include="DataModel\" />
     <Folder Include="Publishers\" />
     <Folder Include="Transformers\" />

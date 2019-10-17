@@ -107,7 +107,7 @@ namespace Collector.SDK.Converters
             var names = ConvertLeftSide(point.Key);
             foreach (var name in names)
             {
-                result.Add(name, ConvertRightSide(point.Value));
+                result.Add(name, DateTime.Parse(ConvertRightSide(point.Value) as string));
             }
             return result;
         }

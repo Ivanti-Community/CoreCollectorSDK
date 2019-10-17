@@ -151,7 +151,10 @@ namespace Collector.SDK.Collectors
             {
                 Id = config.Id,
                 LeftSideMap = config.LeftSideMap,
-                Type = config.Type,
+                CombineInputOutput = config.CombineInputOutput,
+                DataType = config.DataType,
+                NestOutput = config.NestOutput,
+                Type = config.Type
             };
             foreach (var key in config.Properties.Keys)
             {

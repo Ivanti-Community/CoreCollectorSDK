@@ -37,25 +37,25 @@ namespace Collector.SDK.Samples.Readers
                 if (!EndPointConfig.Properties.ContainsKey(CollectorConstants.KEY_FOLDER))
                 {
                     _logger.Error("Property 'FolderName' is missing from the end point config properties");
-                    var stateEvent = new StateEvent()
+                    var stateEvent1 = new StateEvent()
                     {
                         SenderId = Id,
                         State = CollectorConstants.STATE_READER_ERROR,
                         ExtraInfo = "FolderName property is missing."
                     };
-                    await _collector.SignalEvent(stateEvent);
+                    await _collector.SignalEvent(stateEvent1);
                     return;
                 }
                 if (!EndPointConfig.Properties.ContainsKey(CollectorConstants.KEY_FILENAME))
                 {
                     _logger.Error("Property 'FileName' is missing from the end point config properties");
-                    var stateEvent = new StateEvent()
+                    var stateEvent2 = new StateEvent()
                     {
                         SenderId = Id,
                         State = CollectorConstants.STATE_READER_ERROR,
                         ExtraInfo = "FileName property is missing."
                     };
-                    await _collector.SignalEvent(stateEvent);
+                    await _collector.SignalEvent(stateEvent2);
                     return;
                 }
                 var path = EndPointConfig.Properties[CollectorConstants.KEY_FOLDER];
@@ -84,24 +84,31 @@ namespace Collector.SDK.Samples.Readers
                             if (entries[0].Contains("Exception"))
                                 continue;
                             // From entry 6 on is the message, lets recreate it...
-                            var message = "";
+                            /*var message = "";
                             for (int i = 4; i < entries.Length; i++)
                             {
                                 message = string.Format(CultureInfo.InvariantCulture, "{0} {1}", message, entries[i]);
-                            }
+                            }*/
                             // Now create our data entry...
-                            row.Entities.Add("Date", entries[0]);
-                            row.Entities.Add("Time", entries[1]);
-                            row.Entities.Add("Type", entries[3]);
-                            row.Entities.Add("Module", entries[5]);
-                            row.Entities.Add("Message", message);
+                            for (int i = 0; i < entries.Length; i++)
+                            {
+                                row.Entities.Add(string.Format("Col_{0}", i), entries[i]);
+                            }
                             Data.Add(row);
-
-                            // Tell the collector that we are done
-                            await SignalHandler(context);
                         }
                     }
                 }
+                // Tell the collector that we are done
+                await SignalHandler(context);
+
+                await SignalHandler(new Dictionary<string, string>() { { "Result", "Done" } });
+                var stateEvent = new StateEvent()
+                {
+                    SenderId = Id,
+                    State = CollectorConstants.STATE_READER_DONE,
+                    ExtraInfo = "Done processing file."
+                };
+                await _collector.SignalEvent(stateEvent);
             } 
             catch (Exception e)
             {

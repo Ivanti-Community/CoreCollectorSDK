@@ -40,7 +40,12 @@ namespace Collector.SDK.Converters
             var result = new Dictionary<string, object>();
 
             var sdate = point.Value as string;
-            var stime = data.Entities["Time"] as string;
+            var timeKey = "Time";
+            if (Properties.ContainsKey("TimeKey"))
+            {
+                timeKey = Properties["TimeKey"];
+            }
+            var stime = data.Entities[timeKey] as string;
             if (!string.IsNullOrEmpty(sdate) && !string.IsNullOrEmpty(stime))
             {
                 stime = stime.Replace(",", ".");

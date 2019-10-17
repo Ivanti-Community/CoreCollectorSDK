@@ -1,6 +1,7 @@
 ﻿// ***************************************************************
 // Copyright 2018 Ivanti Inc. All rights reserved.
 // ***************************************************************
+using System;
 using System.Collections.Generic;
 using Collector.SDK.Collectors;
 using Collector.SDK.DataModel;
@@ -30,29 +31,36 @@ namespace Collector.SDK.Mappers
         public override List<object> Map(List<IEntityCollection> data)
         {
             var convertedDataRows = new List<object>();
-            foreach (var dataRow in data)
+            try
             {
-                var mappedRow = new EntityCollection();
-                foreach (var dataPoint in dataRow.Entities)
+                foreach (var dataRow in data)
                 {
-                    var convertedDataPoints = ConvertDataPoint(dataPoint, dataRow);
-                    if (convertedDataPoints != null)
+                    var mappedRow = new EntityCollection();
+                    foreach (var dataPoint in dataRow.Entities)
                     {
-                        foreach (var convertedDataPoint in convertedDataPoints)
+                        var convertedDataPoints = ConvertDataPoint(dataPoint, dataRow);
+                        if (convertedDataPoints != null)
                         {
-                            mappedRow.Entities.Add(convertedDataPoint.Key, convertedDataPoint.Value);
+                            foreach (var convertedDataPoint in convertedDataPoints)
+                            {
+                                mappedRow.Entities.Add(convertedDataPoint.Key, convertedDataPoint.Value);
+                            }
                         }
                     }
+                    if (!string.IsNullOrEmpty(DataType))
+                    {
+                        var entity = CollectorFactory.CreateEntity(DataType, mappedRow.Entities);
+                        convertedDataRows.Add(entity);
+                    }
+                    else
+                    {
+                        convertedDataRows.Add(mappedRow);
+                    }
                 }
-                if (!string.IsNullOrEmpty(DataType))
-                {
-                    var entity = CollectorFactory.CreateEntity(DataType, mappedRow.Entities);
-                    convertedDataRows.Add(entity);
-                }
-                else
-                {
-                    convertedDataRows.Add(mappedRow);
-                }
+            } 
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
             }
             return convertedDataRows;
         }

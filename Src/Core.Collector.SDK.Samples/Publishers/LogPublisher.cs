@@ -28,6 +28,18 @@ namespace Collector.SDK.Samples.Publishers
         public override Task Publish(string senderId, List<object> data, Dictionary<string, string> context)
         {
             return Task.Run(() => {
+                if (context.ContainsKey("Result") && context["Result"].Equals("Done"))
+                {
+                    // Handle the context, in this case we assume we are done.
+                    var stateEventDone = new StateEvent()
+                    {
+                        SenderId = Id,
+                        State = CollectorConstants.STATE_PUBLISHER_DONE,
+                        ExtraInfo = "Publisher done."
+                    };
+                    _collector.SignalEvent(stateEventDone);
+                }
+
                 if (!EndPointConfig.Properties.ContainsKey(CollectorConstants.KEY_FOLDER))
                 {
                     _logger.Error("Property 'Path' is missing from the end point config properties");

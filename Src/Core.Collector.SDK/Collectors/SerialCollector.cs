@@ -11,6 +11,7 @@ namespace Collector.SDK.Collectors
     public class SerialCollector : AbstractCollector
     {
         private readonly ILogger _logger;
+        private IStack _stack;
 
         public SerialCollector(ILogger logger) : base(logger)
         {
@@ -21,24 +22,25 @@ namespace Collector.SDK.Collectors
             return Task.Run(() => 
             {
                 _logger.Info("ID = {0} - State = {1}", state.SenderId, state.State);
+                if (state.State.Equals(CollectorConstants.STATE_PUBLISHER_DONE))
+                {
+                    _logger.Info("Stack complete, killing the stack.");
+                }
             });
         }
-        public override Task Run()
+        public override async Task Run()
         {
-            return Task.Run(() =>
+            List<Task> tasks = new List<Task>();
+            foreach (var readerId in ReaderIds)
             {
-                List<Task> tasks = new List<Task>();
-                foreach (var readerId in ReaderIds)
-                {
-                    var properties = new Dictionary<string, string>();
+                var properties = new Dictionary<string, string>();
 
-                    var stack = CreateStack(readerId);
+                _stack = CreateStack(readerId);
 
-                    _logger.Info(string.Format(CultureInfo.InvariantCulture, "Executing reader {0}", stack.Reader.Id));
-                    tasks.Add(stack.Run(properties));
-                }
-                Task.WaitAll(tasks.ToArray());
-            });
+                _logger.Info(string.Format(CultureInfo.InvariantCulture, "Executing reader {0}", readerId));
+                await _stack.Run(properties);
+                _logger.Info(string.Format(CultureInfo.InvariantCulture, "Done executing reader {0}", readerId));
+            }
         }
     }
 }

@@ -51,7 +51,17 @@ namespace Collector.SDK.Mappers
             {
                 var primaryKey = mapping.PrimaryKey;
 
-                if (primaryKey.Contains("*"))
+                if (primaryKey.Equals("*"))
+                {
+                    foreach (var converter in mapping.TargetConverters)
+                    {
+                        if (converter.LeftSideMap.ContainsKey(key))
+                        {
+                            return mapping;
+                        }
+                    }
+                }
+                else if (primaryKey.Contains("*"))
                 {
                     primaryKey = primaryKey.Substring(0, primaryKey.IndexOf("*"));
                     if (primaryKey.Length == 0 || key.StartsWith(primaryKey))
@@ -237,7 +247,7 @@ namespace Collector.SDK.Mappers
                             CombineInputOutput = targetConverter.CombineInputOutput,
                             NestOutput = targetConverter.NestOutput,
                             LeftSideMap = targetConverter.LeftSideMap,
-	                        Properties = MergeProperties(mapping.Properties, targetConverter.Properties),
+	                        Properties = MergeProperties(Converters[targetConverter.Id].Properties, targetConverter.Properties),
 							PipedConverters = converters,
                             Mapping = mapping
                         };
@@ -277,13 +287,13 @@ namespace Collector.SDK.Mappers
                             convertedDataPointsOut = NestedConversion(convertedDataPoints, dataRow);
                             convertedDataPoints = CombineData(targetConverter.CombineInputOutput, convertedDataPoints, convertedDataPointsOut);
                         }
-                    }
-                    result = convertedDataPoints;
-                    if (!targetConverter.Pipe)
-                    {
-                        break;
+                        if (!targetConverter.Pipe)
+                        {
+                            break;
+                        }
                     }
                 }
+                result = convertedDataPoints;
             }
             return result;
         }
