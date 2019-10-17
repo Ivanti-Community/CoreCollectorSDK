@@ -33,6 +33,7 @@ namespace Collector.SDK.Samples.Readers
         {
             var fileName = properties[CollectorConstants.KEY_FILENAME];
 
+            _logger.Info("Reading log file : " + fileName);
             // context gets bubbled up to the transformer and possibly the publisher
             var context = new Dictionary<string, string>();
             context.Add(CollectorConstants.KEY_FILENAME, fileName);

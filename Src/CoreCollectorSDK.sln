@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Collector.SDK.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Collector.SDK.Samples", "Core.Collector.SDK.Samples\Core.Collector.SDK.Samples.csproj", "{12907F27-F67E-4A9B-9D87-60B4B9D2266C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Collector.SDK.Samples.App", "Core.Collector.SDK.Samples.App\Core.Collector.SDK.Samples.App.csproj", "{212E628B-9C61-4E60-8B78-6062B563557B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{12907F27-F67E-4A9B-9D87-60B4B9D2266C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12907F27-F67E-4A9B-9D87-60B4B9D2266C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12907F27-F67E-4A9B-9D87-60B4B9D2266C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{212E628B-9C61-4E60-8B78-6062B563557B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{212E628B-9C61-4E60-8B78-6062B563557B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{212E628B-9C61-4E60-8B78-6062B563557B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{212E628B-9C61-4E60-8B78-6062B563557B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

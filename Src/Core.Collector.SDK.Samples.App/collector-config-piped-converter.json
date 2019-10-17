@@ -1,0 +1,114 @@
+﻿{
+  "Version": "2.0",
+  "Id": "1",
+  "Type": "Collector.SDK.Collectors.SerialCollector,Core.Collector.SDK",
+  "StackType": "Collector.SDK.Collectors.Stack,Core.Collector.SDK",
+  "ThirdPartyTypes": [
+    {
+      "AssemblyName": "Core.Collector.SDK",
+      "Type": "LoggerFacade",
+      "RegisterAll": false,
+      "Owned": false,
+      "Singleton": false
+    }
+  ],
+  "ThirdPartyModules": [
+    {
+      "AssemblyName": "AutoFac.Extras.NLog.DotNetCore",
+      "RegisterAll": true
+    }
+  ],
+  "Properties": {
+    "FolderPath": "c:\\temp",
+    "FileFilter": "*.log"
+  },
+  "EndPoints": [
+    {
+      "Id": 20,
+      "Name": "PublishedLogFile",
+      "User": "",
+      "Password": "",
+      "Properties": {
+        "FolderPath": "c:\\temp",
+        "FileName": "c:\\temp\\discovery.log"
+      }
+    },
+    {
+      "Id": 21,
+      "Name": "XtractionLogs",
+      "User": "",
+      "Password": "",
+      "Properties": {
+      }
+    }
+  ],
+  "Readers": [
+    {
+      "Id": "31",
+      "Type": "Collector.SDK.Samples.Readers.LogFileReader,Core.Collector.SDK.Samples",
+      "DataType": "LogEntry",
+      "EndPointId": "21"
+    }
+  ],
+  "Transformers": [
+    {
+      "Id": "40",
+      "Type": "Collector.SDK.Transformers.DefaultTransformer,Core.Collector.SDK",
+      "ReaderId": "31",
+      "Mappers": [
+        {
+          "Id": "50",
+          "TransformerId": "40",
+          "Type": "Collector.SDK.Mappers.DefaultMapper,Core.Collector.SDK",
+          "PipedConverters": [
+            {
+              "Id": "1",
+              "Type": "Collector.SDK.Converters.CombineDateTimeConverter,Core.Collector.SDK",
+              "Properties": {
+              }
+            },
+            {
+              "Id": "2",
+              "Type": "Collector.SDK.Converters.DateTimeUtcConverter,Core.Collector.SDK",
+              "Properties": {
+              }
+            }
+          ],
+          "SourceTargetMappings": [
+            {
+              "PipeData": "true",
+              "PrimaryKey":  "Date",
+              "TargetConverters": [
+                {
+                  "Id": "1",
+                  "CombineInputOutput": "false",
+                  "LeftSideMap": {
+                    "Date": [ "DateTime" ]
+                  }
+                },
+                {
+                  "Id": "2",
+                  "CombineInputOutput": "true",
+                  "LeftSideMap": {
+                    "DateTime": [ "DateTimeUTC" ],
+                    "Date": [ "DateTimeUTC" ]
+                  }
+                }
+              ],
+              "Properties": {
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Publishers": [
+    {
+      "Id": "60",
+      "Type": "Collector.SDK.Samples.Publishers.LogPublisher,Core.Collector.SDK.Samples",
+      "TransformerId": "40",
+      "EndPointId": "20"
+    }
+  ]
+}
