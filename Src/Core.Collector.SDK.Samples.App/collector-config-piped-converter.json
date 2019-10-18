@@ -69,7 +69,7 @@
             },
             {
               "Id": "2",
-              "Type": "Collector.SDK.Converters.DateTimeUtcConverter,Core.Collector.SDK",
+              "Type": "Collector.SDK.Samples.Converters.SimpleDateTimeUtcConverter,Core.Collector.SDK.Samples",
               "Properties": {
               }
             },
