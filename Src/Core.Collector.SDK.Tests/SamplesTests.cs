@@ -14,6 +14,7 @@ using Collector.SDK.Mappers;
 using Collector.SDK.Publishers;
 using Collector.SDK.Samples.Collectors;
 using Collector.SDK.Samples.Converters;
+using Collector.SDK.Samples.DataModel;
 using Collector.SDK.Samples.Readers;
 using Collector.SDK.Samples.Transformers.DataModel;
 using Collector.SDK.Tests;
@@ -154,30 +155,36 @@ namespace Collector.SDK.Samples.Tests
         public void LogPublisher_Publish_Success()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
-            var fileName = string.Format(CultureInfo.InvariantCulture, "{0}\\test.log", currentDirectory);
-            var outFileName = string.Format(CultureInfo.InvariantCulture, "{0}\\publisher-log.txt", currentDirectory);
-            File.Delete(outFileName);
+            //var outFileName = string.Format(CultureInfo.InvariantCulture, "{0}\\publisher-log.txt", currentDirectory);
+            var outFileName = string.Format("{0}\\publisher-log-{1}{2}{3}{4}{5}.txt",
+                                currentDirectory, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, DateTime.Now.Hour, DateTime.Now.Minute);
+            
 
             var publisher = ComponentRegistration.CreateInstance<IPublisher>("Collector.SDK.Samples.Publishers.LogPublisher, Core.Collector.SDK.Samples");
-            var config = ConfigurationTests.CreateEndPointConfig("1", "FileName", fileName);
-            config.Properties.Add(CollectorConstants.KEY_FOLDER, currentDirectory);
+            var config = ConfigurationTests.CreateEndPointConfig("1", CollectorConstants.KEY_FOLDER, currentDirectory);
             publisher.Configure("5", config);
 
-            var entity = new MockEntity();
-            entity.XYZ = "123";
-            entity.ABC = "789";
+            var entity = new LogEntry()
+            {
+                DateTime = DateTime.Now,
+                DateTimeUTC = DateTime.Now.ToUniversalTime(),
+                Type = "INFO",
+                Module = "SomeModuleName",
+                Message = "Some log message"
+            };
             var data = new List<object>();
             data.Add(entity);
 
             var context = new Dictionary<string, string>();
-            context.Add(CollectorConstants.KEY_FILENAME, fileName);
 
             publisher.PublishData("3", data, context).Wait();
 
             File.Exists(outFileName).Should().BeTrue();
 
             var text = File.ReadAllText(outFileName);
-            text.Should().Contain("\"XYZ\":\"123\"");
+            //text.Should().Contain("\"TYPE\":\"INFO\"");
+            text.Should().Contain("\"Module\":\"SomeModuleName\"");
+            text.Should().Contain("\"Message\":\"Some log message\"");
         }
     }
 }

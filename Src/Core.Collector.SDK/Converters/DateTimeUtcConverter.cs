@@ -104,10 +104,19 @@ namespace Collector.SDK.Converters
         public override Dictionary<string, object> Convert(KeyValuePair<string, object> point, IEntityCollection row)
         {
             var result = new Dictionary<string, object>();
-            var names = ConvertLeftSide(point.Key);
-            foreach (var name in names)
+            try
             {
-                result.Add(name, DateTime.Parse(ConvertRightSide(point.Value) as string));
+                var names = ConvertLeftSide(point.Key);
+                foreach (var name in names)
+                {
+                    var udt = ConvertRightSide(point.Value) as string;
+                    var dt = DateTime.Parse(udt).ToUniversalTime();
+                    result.Add(name, udt);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
             }
             return result;
         }

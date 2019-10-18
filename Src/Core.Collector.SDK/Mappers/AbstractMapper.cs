@@ -241,13 +241,15 @@ namespace Collector.SDK.Mappers
                 {
                     if (Converters.ContainsKey(targetConverter.Id))
                     {
+                        var mergedProperties = MergeProperties(Converters[targetConverter.Id].Properties, targetConverter.Properties);
+                        mergedProperties = MergeProperties(mergedProperties, mapping.Properties);
                         var config = new ConverterConfiguration()
                         {
                             Id = targetConverter.Id,
                             CombineInputOutput = targetConverter.CombineInputOutput,
                             NestOutput = targetConverter.NestOutput,
                             LeftSideMap = targetConverter.LeftSideMap,
-	                        Properties = MergeProperties(Converters[targetConverter.Id].Properties, targetConverter.Properties),
+	                        Properties = mergedProperties,
 							PipedConverters = converters,
                             Mapping = mapping
                         };

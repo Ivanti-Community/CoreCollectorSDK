@@ -190,7 +190,8 @@ namespace Collector.SDK.Tests
 
             var convertedPoint = converter.Convert(dataPoint, dataRow);
             convertedPoint.Should().NotBeNull();
-            Assert.AreEqual("16:01:00.000Z", convertedPoint["DateTime"].ToString().Split('T')[1]); // UTC
+            var udts = (string)convertedPoint["DateTime"];
+            Assert.AreEqual("16:01:00.000Z", udts.Split('T')[1]); // UTC
         }
 
         [TestMethod]
@@ -234,7 +235,7 @@ namespace Collector.SDK.Tests
 
             var convertedPoint = converter.Convert(dataPoint, dataRow);
             convertedPoint.Should().NotBeNull();
-            Assert.AreEqual("This is crap text", convertedPoint["DateTime"].ToString()); // UTC
+            convertedPoint.Count.Should().Be(0);
         }
 
         [TestMethod]
